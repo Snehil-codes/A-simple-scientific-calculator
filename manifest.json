@@ -1,0 +1,23 @@
+{
+  "name": "Scientific Calculator",
+  "short_name": "Calc",
+  "description": "A simple scientific calculator",
+  "start_url": "/A-simple-scientific-calculator/",
+  "scope": "/A-simple-scientific-calculator/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#f2f2f2",
+  "theme_color": "#222222",
+  "icons": [
+    {
+      "src": "icon.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

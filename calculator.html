@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Calculator</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#222222">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="apple-mobile-web-app-title" content="Calc">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  body {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f2f2f2;
+    font-family: 'Segoe UI', Arial, sans-serif;
+  }
+
+  .calculator {
+    background: #ffffff;
+    border-radius: 16px;
+    padding: 20px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    width: 340px;
+  }
+
+  .display {
+    background: #f7f7f7;
+    color: #222;
+    font-size: 2.2rem;
+    text-align: right;
+    padding: 20px 15px;
+    border-radius: 10px;
+    margin-bottom: 12px;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+
+  .mode-toggle {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 10px;
+  }
+
+  .mode-toggle {
+    justify-content: flex-end;
+    margin-bottom: 10px;
+  }
+
+  .sci-toggle-box {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    gap: 2px;
+    background: #eeeeee;
+    border-radius: 8px;
+    padding: 5px;
+    cursor: pointer;
+    width: 46px;
+    height: 46px;
+    transition: background 0.15s ease;
+  }
+
+  .sci-toggle-box:hover {
+    background: #e0e0e0;
+  }
+
+  .sci-toggle-box.active {
+    background: #222;
+    color: #fff;
+  }
+
+  .sci-toggle-box span {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: #555;
+    line-height: 1;
+  }
+
+  .sci-toggle-box.active span {
+    color: #fff;
+  }
+
+  .buttons {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+  }
+
+  .sci-buttons {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+    margin-bottom: 8px;
+  }
+
+  .hidden {
+    display: none;
+  }
+
+  button {
+    padding: 16px 0;
+    font-size: 1.1rem;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    background: #eeeeee;
+    color: #222;
+    transition: background 0.15s ease;
+  }
+
+  button:hover {
+    background: #e0e0e0;
+  }
+
+  button:active {
+    background: #d5d5d5;
+  }
+
+  .operator {
+    background: #f0f0f0;
+    color: #d9822b;
+    font-weight: 600;
+  }
+
+  .equals {
+    background: #222;
+    color: #fff;
+    font-weight: 600;
+    grid-column: span 2;
+  }
+
+  .equals:hover {
+    background: #000;
+  }
+
+  .clear {
+    color: #d9482b;
+    font-weight: 600;
+  }
+
+  .sci {
+    background: #f7f7f7;
+    color: #555;
+    font-size: 0.95rem;
+  }
+</style>
+</head>
+<body>
+
+<div class="calculator">
+  <div class="display" id="display">0</div>
+
+  <div class="mode-toggle">
+    <div class="sci-toggle-box" id="sciToggleBox" onclick="toggleScientific()" title="Toggle scientific mode">
+      <span>&radic;</span>
+      <span>&pi;</span>
+      <span><i>e</i></span>
+      <span>x<sup>y</sup></span>
+    </div>
+  </div>
+
+  <div class="sci-buttons hidden" id="sciButtons">
+    <button class="sci" onclick="appendValue('sin(')">sin</button>
+    <button class="sci" onclick="appendValue('cos(')">cos</button>
+    <button class="sci" onclick="appendValue('tan(')">tan</button>
+    <button class="sci" onclick="appendValue('sqrt(')">&radic;</button>
+
+    <button class="sci" onclick="appendValue('log(')">log</button>
+    <button class="sci" onclick="appendValue('ln(')">ln</button>
+    <button class="sci" onclick="appendValue('^')">x^y</button>
+    <button class="sci" onclick="appendValue('pi')">&pi;</button>
+
+    <button class="sci" onclick="appendValue('(')">(</button>
+    <button class="sci" onclick="appendValue(')')">)</button>
+    <button class="sci" onclick="appendValue('!')">n!</button>
+    <button class="sci" onclick="appendValue('e')">e</button>
+  </div>
+
+  <div class="buttons">
+    <button class="clear" onclick="clearDisplay()">C</button>
+    <button onclick="deleteLast()">&larr;</button>
+    <button class="operator" onclick="appendValue('%')">%</button>
+    <button class="operator" onclick="appendValue('/')">&divide;</button>
+
+    <button onclick="appendValue('7')">7</button>
+    <button onclick="appendValue('8')">8</button>
+    <button onclick="appendValue('9')">9</button>
+    <button class="operator" onclick="appendValue('*')">&times;</button>
+
+    <button onclick="appendValue('4')">4</button>
+    <button onclick="appendValue('5')">5</button>
+    <button onclick="appendValue('6')">6</button>
+    <button class="operator" onclick="appendValue('-')">&minus;</button>
+
+    <button onclick="appendValue('1')">1</button>
+    <button onclick="appendValue('2')">2</button>
+    <button onclick="appendValue('3')">3</button>
+    <button class="operator" onclick="appendValue('+')">+</button>
+
+    <button onclick="appendValue('0')">0</button>
+    <button onclick="appendValue('.')">.</button>
+    <button class="equals" onclick="calculate()">=</button>
+  </div>
+</div>
+
+<script>
+  let display = document.getElementById('display');
+  let currentValue = '0';
+  let sciVisible = false;
+
+  function updateDisplay() {
+    display.textContent = currentValue;
+  }
+
+  function toggleScientific() {
+    sciVisible = !sciVisible;
+    document.getElementById('sciButtons').classList.toggle('hidden');
+    document.getElementById('sciToggleBox').classList.toggle('active', sciVisible);
+  }
+
+  function appendValue(val) {
+    if (currentValue === '0' && val !== '.') {
+      currentValue = val;
+    } else {
+      currentValue += val;
+    }
+    updateDisplay();
+  }
+
+  function clearDisplay() {
+    currentValue = '0';
+    updateDisplay();
+  }
+
+  function deleteLast() {
+    currentValue = currentValue.slice(0, -1);
+    if (currentValue === '') currentValue = '0';
+    updateDisplay();
+  }
+
+  function factorial(n) {
+    if (n < 0) return NaN;
+    if (n === 0) return 1;
+    let result = 1;
+    for (let i = 2; i <= n; i++) result *= i;
+    return result;
+  }
+
+  function calculate() {
+    try {
+      let expression = currentValue
+        .replace(/(\d+(\.\d+)?)%/g, '($1/100)')
+        .replace(/\^/g, '**')
+        .replace(/sin\(/g, 'Math.sin(')
+        .replace(/cos\(/g, 'Math.cos(')
+        .replace(/tan\(/g, 'Math.tan(')
+        .replace(/sqrt\(/g, 'Math.sqrt(')
+        .replace(/log\(/g, 'Math.log10(')
+        .replace(/ln\(/g, 'Math.log(')
+        .replace(/pi/g, 'Math.PI')
+        .replace(/e/g, 'Math.E')
+        .replace(/(\d+)!/g, 'factorial($1)');
+
+      let result = eval(expression);
+
+      // Limit to 5 digits after the decimal point
+      if (typeof result === 'number' && !Number.isInteger(result)) {
+        result = parseFloat(result.toFixed(5));
+      }
+
+      currentValue = String(result);
+      updateDisplay();
+    } catch (error) {
+      currentValue = 'Error';
+      updateDisplay();
+      setTimeout(() => {
+        currentValue = '0';
+        updateDisplay();
+      }, 1000);
+    }
+  }
+  // Register service worker for PWA / offline support
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('sw.js')
+        .then(() => console.log('Service Worker registered'))
+        .catch(err => console.log('SW registration failed:', err));
+    });
+  }
+</script>
+
+</body>
+</html>
